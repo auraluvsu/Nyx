@@ -1,0 +1,42 @@
+# Treat all text files as UTF-8 and normalize line endings to LF (Unix style)
+* text=auto eol=lf
+
+# Go files: Just text, no fancy diffing needed
+*.go text diff=go
+
+# Python files: Pretty similar, but let's also make sure they stay textified
+*.py text diff=python
+
+# Shell scripts (you might have these for tooling)
+*.sh text eol=lf
+
+# Makefiles: LF line endings because make is picky
+Makefile text eol=lf
+
+# Ignore OS-specific files that shouldn't cause diff noise
+*.DS_Store binary
+Thumbs.db binary
+
+# Binary files (images, compiled stuff etc.) - no diffing
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.exe binary
+*.dll binary
+*.so binary
+*.zip binary
+*.tar.gz binary
+*.tgz binary
+
+# Lock files — important to treat as text so Git doesn't mangle them
+go.mod text
+go.sum text
+requirements.txt text
+
+# If you're using Jupyter for Python experiments
+*.ipynb text
+
+# Optional: enforce linguist language detection for GitHub
+*.go linguist-language=Go
+*.py linguist-language=Python
