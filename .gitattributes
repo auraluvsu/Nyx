@@ -34,9 +34,27 @@ go.mod text
 go.sum text
 requirements.txt text
 
-# If you're using Jupyter for Python experiments
-*.ipynb text
-
-# Optional: enforce linguist language detection for GitHub
+# Go files
 *.go linguist-language=Go
+
+# Python files
 *.py linguist-language=Python
+
+# Shell scripts
+*.sh linguist-language=Shell
+
+# Markdown docs
+*.md linguist-language=Markdown
+
+# HTML/CSS/JS (if you ever dabble in full-stack magic)
+*.html linguist-language=HTML
+*.css linguist-language=CSS
+*.js linguist-language=JavaScript
+
+# JSON & YAML configs
+*.json linguist-language=JSON
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
+
+# SQL scripts
+*.sql linguist-language=SQL
