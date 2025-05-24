@@ -1,2 +1,2 @@
-# project-nyx
-Project Nyx is a chess engine written in Go, with a ML brain in pytorch
+<h1 align="center">Project Nyx</h1>
+<h2 align="center"><s>Class level: Omega</s></h2>
