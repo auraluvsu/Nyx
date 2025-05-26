@@ -16,6 +16,44 @@ func inBounds(x, y int) bool {
 	return x >= 0 && x < 8 && y >= 0 && y < 8
 }
 
+func (p *Piece) DiagPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
+	if board[toX][toY] == nil {
+		return false
+	}
+	return board[toX][toY].Colour == p.Colour
+}
+func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
+	if !inBounds(toX, toY) {
+		return false
+	}
+	direction := -1
+	startRow := 6
+	if p.Colour == Black {
+		direction = 1
+		startRow = 1
+	}
+	if board[toX][toY] != nil || board[toX][fromY+direction] != nil {
+		return false
+	}
+	if math.Abs(float64(toX-fromX)) != 1 {
+		return false
+	}
+	if fromY == toX {
+		if toY == fromY+direction && board[toX][toY] == nil {
+			return true
+		}
+		if fromY == startRow && toY == fromY+2*direction && board[toX][toY] == nil && board[toX][fromY+direction] == nil {
+			return true
+		}
+	}
+	if math.Abs(float64(toX-fromX)) == 1 && toY == fromY+direction {
+		if p.DiagPawnMove(fromX, fromY, toX, toY, board) {
+			return true
+		}
+	}
+	return false
+}
+
 func (p *Piece) IsValidKnightMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	if !inBounds(toX, toY) {
 		return false
@@ -105,5 +143,20 @@ func (p *Piece) IsValidQueenMove(fromX, fromY, toX, toY int, board [8][8]*Piece)
 		return true
 	}
 	// If the move is valid for neither piece, return false so you can't move
+	return false
+}
+
+func (p *Piece) IsValidKingMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
+	// Check if destination is in bounds
+	if !inBounds(toX, toY) {
+		return false
+	}
+	// Check if there is a piece on that destination and if its your piece
+	if !colorCheck(p, board, toX, toY) {
+		return false
+	}
+	if math.Abs(float64(toX-fromX)) <= 1 || math.Abs(float64(toY-fromY)) <= 1 {
+		return true
+	}
 	return false
 }
