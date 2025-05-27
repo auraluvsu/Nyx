@@ -8,7 +8,7 @@ func emptyBoard() [8][8]*Piece {
 
 func TestKnightMove(t *testing.T) {
 	board := emptyBoard()
-	knight := &Piece{Type: Knight, Colour: White, HasMoved: false}
+	knight := newPiece(Knight, White)
 	board[4][4] = knight
 
 	validMoves := [][2]int{
