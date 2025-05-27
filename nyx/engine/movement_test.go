@@ -32,24 +32,28 @@ func TestKnightMove(t *testing.T) {
 
 func TestBishopMove(t *testing.T) {
 	board := emptyBoard()
-	bishop := &Piece{Type: Bishop, Colour: White, HasMoved: false}
+	bishop := newPiece(Bishop, White)
 	board[3][3] = bishop
 
 	validMoves := [][2]int{
 		{0, 0}, {0, 6}, {6, 6}, {6, 0},
 	}
 	for _, move := range validMoves {
-		if !bishop.IsValidKnightMove(4, 4, move[0], move[1], board) {
+		if !bishop.IsValidBishopMove(3, 3, move[0], move[1], board) {
 			t.Errorf("Bishop should be able to move to %v", move)
 		}
 	}
-
+}
+func TestInvalidBishopMove(t *testing.T) {
+	board := emptyBoard()
+	bishop := newPiece(Bishop, White)
+	board[3][3] = bishop
 	invalidMoves := [][2]int{
 		{3, 6}, {0, 3}, {4, 6}, {5, 5},
 	}
-	board[4][4] = &Piece{Type: Knight, Colour: White, HasMoved: false}
+	board[4][4] = newPiece(Pawn, White)
 	for _, move := range invalidMoves {
-		if bishop.IsValidKnightMove(4, 4, move[0], move[1], board) {
+		if bishop.IsValidBishopMove(3, 3, move[0], move[1], board) {
 			t.Errorf("Bishop should NOT be able to move to %v", move)
 		}
 	}
