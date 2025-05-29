@@ -12,7 +12,14 @@ func TestKnightMove(t *testing.T) {
 	board[4][4] = knight
 
 	validMoves := [][2]int{
-		{6, 5}, {6, 3}, {2, 5}, {2, 3}, {5, 6}, {5, 2}, {3, 6}, {3, 2},
+		{6, 5},
+		{6, 3},
+		{2, 5},
+		{2, 3},
+		{5, 6},
+		{5, 2},
+		{3, 6},
+		{3, 2},
 	}
 	for _, move := range validMoves {
 		if !knight.IsValidKnightMove(4, 4, move[0], move[1], board) {
@@ -21,7 +28,10 @@ func TestKnightMove(t *testing.T) {
 	}
 
 	invalidMoves := [][2]int{
-		{5, 5}, {4, 6}, {4, 3}, {7, 4},
+		{5, 5},
+		{4, 6},
+		{4, 3},
+		{7, 4},
 	}
 	for _, move := range invalidMoves {
 		if knight.IsValidKnightMove(4, 4, move[0], move[1], board) {
@@ -36,7 +46,10 @@ func TestBishopMove(t *testing.T) {
 	board[3][3] = bishop
 
 	validMoves := [][2]int{
-		{0, 0}, {0, 6}, {6, 6}, {6, 0},
+		{0, 0},
+		{0, 6},
+		{6, 6},
+		{6, 0},
 	}
 	for _, move := range validMoves {
 		if !bishop.IsValidBishopMove(3, 3, move[0], move[1], board) {
@@ -49,12 +62,54 @@ func TestInvalidBishopMove(t *testing.T) {
 	bishop := newPiece(Bishop, White)
 	board[3][3] = bishop
 	invalidMoves := [][2]int{
-		{3, 6}, {0, 3}, {4, 6}, {5, 5},
+		{3, 6},
+		{0, 3},
+		{4, 6},
+		{5, 5},
 	}
 	board[4][4] = newPiece(Pawn, White)
 	for _, move := range invalidMoves {
 		if bishop.IsValidBishopMove(3, 3, move[0], move[1], board) {
 			t.Errorf("Bishop should NOT be able to move to %v", move)
+		}
+	}
+}
+
+func TestRookValidMoves(t *testing.T) {
+	board := emptyBoard()
+	rook := newPiece(Rook, White)
+	board[4][4] = rook
+	validMoves := [][2]int{
+		{4, 0},
+		{4, 7},
+		{0, 4},
+		{7, 4},
+	}
+
+	for _, move := range validMoves {
+		toX, toY := move[0], move[1]
+		if !rook.IsValidRookMove(4, 4, toX, toY, board) {
+			t.Errorf("Expected move to (%d, %d) to be valid", toX, toY)
+		}
+	}
+}
+
+func TestRookInvalidMoves(t *testing.T) {
+	board := emptyBoard()
+	rook := newPiece(Rook, White)
+	board[4][4] = rook
+	board[4][6] = newPiece(Queen, White)
+	validMoves := [][2]int{
+		{5, 5},
+		{3, 3},
+		{4, 7},
+		{4, 4},
+	}
+
+	for _, move := range validMoves {
+		toX, toY := move[0], move[1]
+		if rook.IsValidRookMove(4, 4, toX, toY, board) {
+			t.Errorf("Expected move to (%d, %d) to be invalid", toX, toY)
 		}
 	}
 }
