@@ -31,23 +31,21 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 		direction = 1
 		startRow = 1
 	}
-	if math.Abs(float64(fromX-toX)) == 1 && toY == fromY+direction {
+	dx := toX - fromX
+	dy := toY - fromY
+	if dx == 0 {
+		if dy == direction && board[toX][toY] == nil {
+			return true
+		}
+		if fromY == startRow && dy == 2*direction &&
+			board[toX][toY] == nil && board[toX][fromY+direction] == nil {
+			return true
+		}
+	} else if math.Abs(float64(dx)) == 1 && dy == direction {
 		return p.DiagPawnMove(fromX, fromY, toX, toY, board)
-	}
-	if fromX == toX {
-		if toY == fromY+direction && board[toX][toY] == nil {
-			return true
-		}
-		if fromY == startRow &&
-			toY == fromY+2*direction &&
-			board[toX][toY] == nil &&
-			board[toX][fromY+direction] == nil {
-			return true
-		}
 	}
 	return false
 }
-
 func (p *Piece) IsValidKnightMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	if !InBounds(toX, toY) {
 		return false
