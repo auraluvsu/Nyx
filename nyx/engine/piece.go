@@ -5,19 +5,19 @@ import (
 )
 
 type Piece struct {
-	Type     pieceType // Each piece has a specific type assigned to it e.g. Knight
+	Type     PieceType // Each piece has a specific type assigned to it e.g. Knight
 	Colour   colour    //Playing for white or black
 	HasMoved bool      //Making sure turn based logic is working
 }
 
 type Move struct {
-	Fx, Fy   int  // Fx (From x coordinate), Fy (From y coordinate)
-	Tx, Ty   int  // Tx (To x coordinate), Ty (To y coordinate)
-	Promoted bool //Keeps track of pieces that have been promoted
+	Piece  PieceType
+	Fx, Fy *int
+	Tx, Ty int // Tx (To x coordinate), Ty (To y coordinate)
 }
 
 type colour string
-type pieceType string
+type PieceType string
 
 const (
 	White colour = "White"
@@ -25,12 +25,12 @@ const (
 )
 
 const ( // Piece Types
-	Pawn   pieceType = "Pawn"
-	Knight pieceType = "Knight"
-	Bishop pieceType = "Bishop"
-	Rook   pieceType = "Rook"
-	King   pieceType = "King"
-	Queen  pieceType = "Queen"
+	Pawn   PieceType = "Pawn"
+	Knight PieceType = "Knight"
+	Bishop PieceType = "Bishop"
+	Rook   PieceType = "Rook"
+	King   PieceType = "King"
+	Queen  PieceType = "Queen"
 )
 
 func makeBoard() [][]uint8 {
@@ -60,4 +60,47 @@ func indexToChess(x, y int) (string, error) {
 	file := rune('a' + x)
 	rank := rune('8' - y)
 	return string([]rune{file, rank}), nil
+}
+
+func pieceSymbol(p *Piece) string {
+	switch p.Type {
+	case Rook:
+		if p.Colour == White {
+			return "♖ "
+		}
+		return "♜ "
+
+	case Knight:
+		if p.Colour == White {
+			return "♘ "
+		}
+		return "♞ "
+
+	case Bishop:
+		if p.Colour == White {
+			return "♗ "
+		}
+		return "♝ "
+
+	case Queen:
+		if p.Colour == White {
+			return "♕ "
+		}
+		return "♕ "
+
+	case King:
+		if p.Colour == White {
+			return "♔ "
+		}
+		return "♕ "
+
+	case Pawn:
+		if p.Colour == White {
+			return "♙ "
+		}
+		return "♙ "
+
+	default:
+		return "."
+	}
 }

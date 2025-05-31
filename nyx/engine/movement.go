@@ -1,6 +1,7 @@
 package nyx
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -12,18 +13,16 @@ func colorCheck(mp *Piece, op [8][8]*Piece, toX, toY int) bool {
 	return true
 }
 
-func inBounds(x, y int) bool {
+func InBounds(x, y int) bool {
 	return x >= 0 && x < 8 && y >= 0 && y < 8
 }
 
 func (p *Piece) DiagPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
-	if board[toX][toY] == nil {
-		return false
-	}
-	return board[toX][toY].Colour == p.Colour
+	target := board[toX][toY]
+	return target != nil && target.Colour != p.Colour
 }
 func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	direction := -1
@@ -32,22 +31,17 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 		direction = 1
 		startRow = 1
 	}
-	if board[toX][toY] != nil || board[toX][fromY+direction] != nil {
-		return false
+	if math.Abs(float64(fromX-toX)) == 1 && toY == fromY+direction {
+		return p.DiagPawnMove(fromX, fromY, toX, toY, board)
 	}
-	if math.Abs(float64(toX-fromX)) != 1 {
-		return false
-	}
-	if fromY == toX {
+	if fromX == toX {
 		if toY == fromY+direction && board[toX][toY] == nil {
 			return true
 		}
-		if fromY == startRow && toY == fromY+2*direction && board[toX][toY] == nil && board[toX][fromY+direction] == nil {
-			return true
-		}
-	}
-	if math.Abs(float64(toX-fromX)) == 1 && toY == fromY+direction {
-		if p.DiagPawnMove(fromX, fromY, toX, toY, board) {
+		if fromY == startRow &&
+			toY == fromY+2*direction &&
+			board[toX][toY] == nil &&
+			board[toX][fromY+direction] == nil {
 			return true
 		}
 	}
@@ -55,7 +49,7 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 }
 
 func (p *Piece) IsValidKnightMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	dx := toX - fromX
@@ -74,7 +68,7 @@ func (p *Piece) IsValidKnightMove(fromX, fromY, toX, toY int, board [8][8]*Piece
 }
 
 func (p *Piece) IsValidRookMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	if !colorCheck(p, board, toX, toY) {
@@ -100,7 +94,7 @@ func (p *Piece) IsValidRookMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 }
 
 func (p *Piece) IsValidBishopMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	if !colorCheck(p, board, toX, toY) {
@@ -130,7 +124,7 @@ func (p *Piece) IsValidBishopMove(fromX, fromY, toX, toY int, board [8][8]*Piece
 
 func (p *Piece) IsValidQueenMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	// Check if destination is in bounds
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	// Check if there is a piece on that destination and if its your piece
@@ -148,15 +142,39 @@ func (p *Piece) IsValidQueenMove(fromX, fromY, toX, toY int, board [8][8]*Piece)
 
 func (p *Piece) IsValidKingMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	// Check if destination is in bounds
-	if !inBounds(toX, toY) {
+	if !InBounds(toX, toY) {
 		return false
 	}
 	// Check if there is a piece on that destination and if its your piece
 	if !colorCheck(p, board, toX, toY) {
 		return false
 	}
-	if math.Abs(float64(toX-fromX)) <= 1 || math.Abs(float64(toY-fromY)) <= 1 {
-		return true
+	dx := int(math.Abs(float64(toX - fromX)))
+	dy := int(math.Abs(float64(toY - fromY)))
+	return dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
+}
+
+func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (bool, error) {
+	switch p.Type {
+	case Rook:
+		return p.IsValidRookMove(fromX, fromY, toX, toY, board), nil
+
+	case Bishop:
+		return p.IsValidBishopMove(fromX, fromY, toX, toY, board), nil
+
+	case Knight:
+		return p.IsValidKnightMove(fromX, fromY, toX, toY, board), nil
+
+	case Queen:
+		return p.IsValidQueenMove(fromX, fromY, toX, toY, board), nil
+
+	case King:
+		return p.IsValidKingMove(fromX, fromY, toX, toY, board), nil
+
+	case Pawn:
+		return p.IsValidPawnMove(fromX, fromY, toX, toY, board), nil
+
+	default:
+		return false, fmt.Errorf("Error! Not a valid piece")
 	}
-	return false
 }
