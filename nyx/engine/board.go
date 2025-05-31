@@ -21,10 +21,10 @@ func SetupBoard() [8][8]*Piece {
 	var board [8][8]*Piece
 	order := []PieceType{Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook}
 	for i := range 8 {
-		board[0][i] = newPiece(order[i], Black)
-		board[1][i] = newPiece(Pawn, Black)
-		board[6][i] = newPiece(Pawn, White)
-		board[7][i] = newPiece(order[i], White)
+		board[i][0] = newPiece(order[i], Black)
+		board[i][1] = newPiece(Pawn, Black)
+		board[i][6] = newPiece(Pawn, White)
+		board[i][7] = newPiece(order[i], White)
 	}
 	return board
 }
