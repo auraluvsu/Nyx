@@ -42,6 +42,7 @@ func DebugPrintBoard(board [8][8]*Piece) {
 			}
 		}
 		fmt.Println()
+		fmt.Println()
 	}
 	fmt.Println(" a b c d e f g h")
 }

@@ -35,6 +35,9 @@ func Game() {
 			for fromY := 0; fromY < 8 && !found; fromY++ {
 				piece := board[fromX][fromY]
 				if piece != nil && piece.Colour == turn && piece.Type == move.Piece {
+					fmt.Printf(
+						"Checking piece %v at %d,%d for move to %d,%d (turn: %v)\n",
+						piece.Type, fromX, fromY, move.Tx, move.Ty, turn)
 					val, err := piece.IsValidMove(fromX, fromY, move.Tx, move.Ty, board)
 					if err != nil {
 						fmt.Println(err)
@@ -53,7 +56,6 @@ func Game() {
 			fmt.Println("No legal piece found that can perform that move.")
 			continue
 		}
-		nyx.DebugPrintBoard(board)
 		turn = nyx.OppositeColour(turn)
 	}
 }

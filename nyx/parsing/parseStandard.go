@@ -43,7 +43,7 @@ func ParseSAN(move string) (*nyx.Move, error) {
 		m.Fx = &file
 	}
 	if matches[3] != "" {
-		rank := int(matches[3][0] - '0')
+		rank := int(matches[3][0] - '1')
 		m.Fy = &rank
 	}
 	x, y, err := ParsePosition(matches[4])
