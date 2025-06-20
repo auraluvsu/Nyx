@@ -78,27 +78,27 @@ func pieceSymbol(p *Piece) string {
 
 	case Bishop:
 		if p.Colour == White {
-			return "♗ "
+			return "  ♗   "
 		}
-		return "♝ "
+		return "  ♝   "
 
 	case Queen:
 		if p.Colour == White {
-			return "♕ "
+			return "  ♕   "
 		}
-		return "♕ "
+		return "  ♕   "
 
 	case King:
 		if p.Colour == White {
-			return "♔ "
+			return "  ♔   "
 		}
-		return "♕ "
+		return "  ♕   "
 
 	case Pawn:
 		if p.Colour == White {
-			return "♙ "
+			return "  ♙   "
 		}
-		return "♙ "
+		return "  ♙   "
 
 	default:
 		return "."
