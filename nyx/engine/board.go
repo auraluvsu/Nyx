@@ -21,10 +21,10 @@ func SetupBoard() [8][8]*Piece {
 	var board [8][8]*Piece
 	order := []PieceType{Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook}
 	for i := range 8 {
-		board[i][0] = newPiece(order[i], Black)
-		board[i][1] = newPiece(Pawn, Black)
-		board[i][6] = newPiece(Pawn, White)
-		board[i][7] = newPiece(order[i], White)
+		board[i][0] = newPiece(order[i], White)
+		board[i][1] = newPiece(Pawn, White)
+		board[i][7] = newPiece(order[i], Black)
+		board[i][6] = newPiece(Pawn, Black)
 	}
 	return board
 }
@@ -44,5 +44,5 @@ func DebugPrintBoard(board [8][8]*Piece) {
 		fmt.Println()
 		fmt.Println()
 	}
-	fmt.Println(" a b c d e f g h")
+	fmt.Println("  a  b  c  d  e  f  g  h  ")
 }
