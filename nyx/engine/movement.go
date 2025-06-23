@@ -25,11 +25,11 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 	if !InBounds(toX, toY) {
 		return false
 	}
-	direction := -1
-	startRow := 6
+	direction := 1
+	startRow := 1
 	if p.Colour == Black {
-		direction = 1
-		startRow = 1
+		direction = -1
+		startRow = 6
 	}
 	dx := toX - fromX
 	dy := toY - fromY

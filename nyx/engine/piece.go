@@ -53,52 +53,43 @@ func chessToIndex(pos string) (x, y int, err error) {
 	return int(file), 7 - int(rank), nil
 }
 
-func indexToChess(x, y int) (string, error) {
-	if x >= 8 || y >= 8 || x < 0 || y < 0 {
-		return "", fmt.Errorf("Error! Invalid index")
-	}
-	file := rune('a' + x)
-	rank := rune('8' - y)
-	return string([]rune{file, rank}), nil
-}
-
 func pieceSymbol(p *Piece) string {
 	switch p.Type {
 	case Rook:
 		if p.Colour == White {
-			return "♖ "
+			return " ♖  "
 		}
-		return "♜ "
+		return " ♜  "
 
 	case Knight:
 		if p.Colour == White {
-			return "♘ "
+			return " ♘  "
 		}
-		return "♞ "
+		return " ♞  "
 
 	case Bishop:
 		if p.Colour == White {
-			return "  ♗   "
+			return " ♗  "
 		}
-		return "  ♝   "
+		return " ♝  "
 
 	case Queen:
 		if p.Colour == White {
-			return "  ♕   "
+			return " ♕  "
 		}
-		return "  ♕   "
+		return " ♕  "
 
 	case King:
 		if p.Colour == White {
-			return "  ♔   "
+			return " ♔  "
 		}
-		return "  ♕   "
+		return " ♕  "
 
 	case Pawn:
 		if p.Colour == White {
-			return "  ♙   "
+			return " ♙  "
 		}
-		return "  ♙   "
+		return " ♙  "
 
 	default:
 		return "."
