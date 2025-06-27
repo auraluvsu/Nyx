@@ -2,7 +2,7 @@ package nyx
 
 import "fmt"
 
-func newPiece(p PieceType, c colour) *Piece {
+func newPiece(p PieceType, c Colour) *Piece {
 	return &Piece{
 		Type:     p,
 		Colour:   c,
@@ -10,7 +10,7 @@ func newPiece(p PieceType, c colour) *Piece {
 	}
 }
 
-func OppositeColour(c colour) colour {
+func OppositeColour(c Colour) Colour {
 	if c == White {
 		return Black
 	}
@@ -21,10 +21,10 @@ func SetupBoard() [8][8]*Piece {
 	var board [8][8]*Piece
 	order := []PieceType{Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook}
 	for i := range 8 {
-		board[i][0] = newPiece(order[i], White)
-		board[i][1] = newPiece(Pawn, White)
-		board[i][7] = newPiece(order[i], Black)
-		board[i][6] = newPiece(Pawn, Black)
+		board[i][0] = newPiece(order[i], Black)
+		board[i][1] = newPiece(Pawn, Black)
+		board[i][7] = newPiece(order[i], White)
+		board[i][6] = newPiece(Pawn, White)
 	}
 	return board
 }

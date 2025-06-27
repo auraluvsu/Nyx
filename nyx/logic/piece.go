@@ -6,7 +6,7 @@ import (
 
 type Piece struct {
 	Type     PieceType // Each piece has a specific type assigned to it e.g. Knight
-	Colour   colour    //Playing for white or black
+	Colour   Colour    //Playing for white or black
 	HasMoved bool      //Making sure turn based logic is working
 }
 
@@ -16,12 +16,12 @@ type Move struct {
 	Tx, Ty int // Tx (To x coordinate), Ty (To y coordinate)
 }
 
-type colour string
+type Colour string
 type PieceType string
 
 const (
-	White colour = "White"
-	Black colour = "Black"
+	White Colour = "White"
+	Black Colour = "Black"
 )
 
 const ( // Piece Types
@@ -56,37 +56,37 @@ func chessToIndex(pos string) (x, y int, err error) {
 func pieceSymbol(p *Piece) string {
 	switch p.Type {
 	case Rook:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♖  "
 		}
 		return " ♜  "
 
 	case Knight:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♘  "
 		}
 		return " ♞  "
 
 	case Bishop:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♗  "
 		}
 		return " ♝  "
 
 	case Queen:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♕  "
 		}
 		return " ♕  "
 
 	case King:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♔  "
 		}
 		return " ♕  "
 
 	case Pawn:
-		if p.Colour == White {
+		if p.Colour == Black {
 			return " ♙  "
 		}
 		return " ♙  "

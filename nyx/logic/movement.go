@@ -27,7 +27,7 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 	}
 	direction := 1
 	startRow := 1
-	if p.Colour == Black {
+	if p.Colour == White {
 		direction = -1
 		startRow = 6
 	}

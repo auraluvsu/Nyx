@@ -2,7 +2,7 @@ package nyx
 
 import "log"
 
-func IsInCheck(c colour, board [8][8]*Piece) bool {
+func IsInCheck(c Colour, board [8][8]*Piece) bool {
 	var kingX, kingY int
 	found := false
 	for x := range 8 {
@@ -35,7 +35,7 @@ func IsInCheck(c colour, board [8][8]*Piece) bool {
 	return false
 }
 
-func HasAnyLegalMoves(c colour, board [8][8]*Piece) bool {
+func HasAnyLegalMoves(c Colour, board [8][8]*Piece) bool {
 	for fromX := range 8 {
 		for fromY := range 8 {
 			p := board[fromX][fromY]
@@ -73,7 +73,7 @@ const (
 	Stalemate GameState = "stalemate"
 )
 
-func GetGameState(c colour, board [8][8]*Piece) GameState {
+func GetGameState(c Colour, board [8][8]*Piece) GameState {
 	inCheck := IsInCheck(c, board)
 	hasMoves := HasAnyLegalMoves(c, board)
 	if inCheck && !hasMoves {
