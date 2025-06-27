@@ -6,11 +6,14 @@ import (
 	"os"
 	"regexp"
 
-	nyx "auraluvsu.com/nyx/engine"
+	nyx "auraluvsu.com/nyx/logic"
 )
 
 func ParseSAN(move string) (*nyx.Move, error) {
 	m := &nyx.Move{}
+	if move == "exit" {
+		os.Exit(1)
+	}
 	re := regexp.MustCompile(`^([NBRQK]?)([a-h]?)([1-8]?)[x-]?([a-h][1-8])$`)
 	matches := re.FindStringSubmatch(move)
 	if matches == nil {
@@ -55,5 +58,4 @@ func ParseSAN(move string) (*nyx.Move, error) {
 	}
 	m.Tx, m.Ty = x, y
 	return m, nil
-
 }

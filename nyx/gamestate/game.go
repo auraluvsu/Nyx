@@ -1,7 +1,7 @@
 package gamestate
 
 import (
-	nyx "auraluvsu.com/nyx/engine"
+	nyx "auraluvsu.com/nyx/logic"
 	"auraluvsu.com/nyx/parsing"
 	"fmt"
 )
@@ -13,7 +13,7 @@ func Game() {
 	for {
 		nyx.DebugPrintBoard(board)
 		if nyx.IsInCheck(turn, board) {
-			fmt.Printf("%s is in check", turn)
+			fmt.Printf("%s is in check\n", turn)
 			if !nyx.HasAnyLegalMoves(turn, board) {
 				fmt.Printf("Checkmate! %s wins", nyx.OppositeColour(turn))
 				break
@@ -47,6 +47,12 @@ func Game() {
 						board[move.Tx][move.Ty] = piece
 						board[fromX][fromY] = nil
 						found = true
+					}
+					if nyx.IsInCheck(turn, board) {
+						fmt.Println("Error: You are in check.")
+						board[move.Tx][move.Ty] = nil
+						board[fromX][fromY] = piece
+						found = false
 					}
 				}
 
