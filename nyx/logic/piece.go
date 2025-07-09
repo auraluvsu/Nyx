@@ -50,44 +50,44 @@ func chessToIndex(pos string) (x, y int, err error) {
 	if file < 0 || file >= 8 || rank < 0 || rank >= 8 {
 		return -1, -1, fmt.Errorf("Error: out of bounds position")
 	}
-	return int(file), 7 - int(rank), nil
+	return int(file), int(rank), nil
 }
 
 func pieceSymbol(p *Piece) string {
 	switch p.Type {
 	case Rook:
-		if p.Colour == Black {
-			return " ♖  "
+		if p.Colour == White {
+			return " ♜  "
 		}
-		return " ♜  "
+		return " ♖  "
 
 	case Knight:
-		if p.Colour == Black {
-			return " ♘  "
+		if p.Colour == White {
+			return " ♞  "
 		}
-		return " ♞  "
+		return " ♘  "
 
 	case Bishop:
-		if p.Colour == Black {
-			return " ♗  "
+		if p.Colour == White {
+			return " ♝  "
 		}
-		return " ♝  "
+		return " ♗  "
 
 	case Queen:
-		if p.Colour == Black {
-			return " ♕  "
+		if p.Colour == White {
+			return " ♛  "
 		}
 		return " ♕  "
 
 	case King:
-		if p.Colour == Black {
-			return " ♔  "
+		if p.Colour == White {
+			return " ♚  "
 		}
-		return " ♕  "
+		return " ♔  "
 
 	case Pawn:
-		if p.Colour == Black {
-			return " ♙  "
+		if p.Colour == White {
+			return " ♟︎  "
 		}
 		return " ♙  "
 
