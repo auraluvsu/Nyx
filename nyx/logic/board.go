@@ -30,7 +30,7 @@ func SetupBoard() [8][8]*Piece {
 }
 
 func DebugPrintBoard(board [8][8]*Piece) {
-	for y := 0; y < 8; y++ {
+	for y := range 8 {
 		fmt.Printf("%d ", y+1)
 		for x := range 8 {
 			p := board[x][y]
