@@ -9,7 +9,7 @@ import (
 	nyx "auraluvsu.com/nyx/logic"
 )
 
-func ParseSAN(move string) (*nyx.Move, error) {
+func ParseSAN(move string, colour nyx.Colour) (*nyx.Move, error) {
 	m := &nyx.Move{}
 	if move == "exit" {
 		os.Exit(1)
@@ -19,9 +19,19 @@ func ParseSAN(move string) (*nyx.Move, error) {
 	if matches == nil {
 		return nil, fmt.Errorf("Could not parse move: %s", move)
 	}
-	//if move == "O-O" || move == "O-O-O" {
-	// Logic for later...
-	//}
+	if move == "O-O" || move == "O-O-O" {
+		var test int
+		if colour == nyx.White {
+			test = 7
+		} else {
+			test = 0
+		}
+		fx, fy := 4, test
+		tx := 6
+		if move == "O-O-O" {
+			tx = 2
+		}
+	}
 	pieceChar := matches[1]
 	if pieceChar == "exit" {
 		os.Exit(1)

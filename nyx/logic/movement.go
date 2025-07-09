@@ -21,6 +21,54 @@ func (p *Piece) DiagPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) boo
 	target := board[toX][toY]
 	return target != nil && target.Colour != p.Colour
 }
+
+func sign(n int) int {
+	if n > 0 {
+		return 1
+	}
+	if n < 0 {
+		return -1
+	}
+	return 0
+}
+
+func CanCastle(kx, ky int, kingSide bool, side Colour, board [8][8]*Piece) bool {
+	var rookX int
+	if kingSide {
+		rookX = 7
+	} else {
+		rookX = 0
+	}
+	rook := board[rookX][ky]
+	if rook == nil || rook.Type != Rook || rook.HasMoved || rook.Colour != side {
+		return false
+	}
+	start := min(kx, rookX)
+	end := max(kx, rookX)
+	for x := start; x <= end; x++ {
+		if board[x][ky] != nil {
+			return false
+		}
+	}
+	path := []int{kx, kx + sign(rookX-kx)}
+	if kingSide {
+		path = append(path, kx+2)
+	} else {
+		path = append(path, kx-2)
+	}
+
+	for _, x := range path {
+		tmp := board[x][ky]
+		board[x][ky], board[kx][ky] = board[kx][ky], nil
+		inCheck := IsInCheck(side, board)
+		board[kx][ky], board[x][ky] = board[x][ky], tmp
+		if inCheck {
+			return false
+		}
+	}
+	return true
+}
+
 func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	if !InBounds(toX, toY) {
 		return false
@@ -138,18 +186,30 @@ func (p *Piece) IsValidQueenMove(fromX, fromY, toX, toY int, board [8][8]*Piece)
 	return false
 }
 
-func (p *Piece) IsValidKingMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
+func (p *Piece) IsValidKingMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (bool, error) {
 	// Check if destination is in bounds
 	if !InBounds(toX, toY) {
-		return false
+		return false, nil
 	}
 	// Check if there is a piece on that destination and if its your piece
 	if !colorCheck(p, board, toX, toY) {
-		return false
+		return false, nil
 	}
 	dx := int(math.Abs(float64(toX - fromX)))
 	dy := int(math.Abs(float64(toY - fromY)))
-	return dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
+	if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+		return true, nil
+	}
+	if dy != 0 || p.HasMoved || p.Type != King {
+		return false, nil
+	}
+	if dx == 2 {
+		return CanCastle(fromX, fromY, true, p.Colour, board), nil
+	}
+	if dx == 3 {
+		return CanCastle(fromX, fromY, false, p.Colour, board), nil
+	}
+	return false, nil
 }
 
 func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (bool, error) {
