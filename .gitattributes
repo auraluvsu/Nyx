@@ -1,8 +1,8 @@
 # Treat all text files as UTF-8 and normalize line endings to LF (Unix style)
 * text=auto eol=lf
 
-# Go files: Just text, no fancy diffing needed
-*.go text diff=go
+# Zig files: Just text, no fancy diffing needed
+*.zig text diff=zig
 
 # Python files: Pretty similar, but let's also make sure they stay textified
 *.py text diff=python
@@ -30,12 +30,10 @@ Thumbs.db binary
 *.tgz binary
 
 # Lock files — important to treat as text so Git doesn't mangle them
-go.mod text
-go.sum text
 requirements.txt text
 
 # Go files
-*.go linguist-language=Go
+*.zig linguist-language=Zig
 
 # Python files
 *.py linguist-language=Python
