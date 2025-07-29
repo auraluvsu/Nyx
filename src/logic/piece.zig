@@ -7,7 +7,7 @@ const thread = @import("std").Thread;
 const io = @import("io");
 const os = @import("os");
 
-const PieceType = enum {
+pub const PieceType = enum {
     Pawn,
     Rook,
     Bishop,
@@ -16,7 +16,7 @@ const PieceType = enum {
     King,
 };
 
-const Colour = enum {
+pub const Colour = enum {
     White,
     Black,
 };
@@ -25,7 +25,7 @@ const Colour = enum {
 /// Each piece also has a Piece type
 /// Pieces also have a meterial count according to their piece type
 /// Pieces have a hasMoved section specifically for castling logic
-const Piece = struct {
+pub const Piece = struct {
     type: PieceType,
     material: u16,
     colour: Colour,
@@ -105,3 +105,5 @@ pub fn printBoard() [8][8]*Piece {
     }
     return board;
 }
+
+pub fn KnightValidMove(self: *Piece
