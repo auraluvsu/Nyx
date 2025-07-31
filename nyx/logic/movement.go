@@ -227,8 +227,8 @@ func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (boo
 		return p.IsValidQueenMove(fromX, fromY, toX, toY, board), nil
 
 	case King:
-		return p.IsValidKingMove(fromX, fromY, toX, toY, board), nil
-
+		val, err := p.IsValidKingMove(fromX, fromY, toX, toY, board)
+		return val, err
 	case Pawn:
 		return p.IsValidPawnMove(fromX, fromY, toX, toY, board), nil
 

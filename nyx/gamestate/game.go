@@ -1,9 +1,10 @@
 package gamestate
 
 import (
+	"fmt"
+
 	nyx "auraluvsu.com/nyx/logic"
 	"auraluvsu.com/nyx/parsing"
-	"fmt"
 )
 
 func Game() {
@@ -25,7 +26,31 @@ func Game() {
 		fmt.Printf("%s to move: \n", turn)
 		var moveStr string
 		fmt.Scan(&moveStr)
-		move, err := parsing.ParseSAN(moveStr)
+		move, err := parsing.ParseSAN(moveStr, turn)
+		if move.IsCastle {
+			kingX := 4
+			kingY := 7
+			rookFromX, rookToX := 7, 5
+			rookY := 7
+			if turn == nyx.Black {
+				kingY = 0
+				rookY = 0
+			}
+			if move.Tx == 2 {
+				rookFromX = 0
+				rookToX = 3
+			}
+
+			board[move.Tx][kingY] = board[kingX][kingY]
+			board[kingX][kingY] = nil
+
+			board[rookToX][rookY] = board[rookFromX][rookY]
+			board[rookFromX][rookY] = nil
+			board[move.Tx][kingY].HasMoved = true
+			board[rookToX][rookY].HasMoved = true
+
+			return
+		}
 		if err != nil {
 			fmt.Println(err)
 			continue

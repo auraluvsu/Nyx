@@ -11,9 +11,10 @@ type Piece struct {
 }
 
 type Move struct {
-	Piece  PieceType
-	Fx, Fy *int
-	Tx, Ty int // Tx (To x coordinate), Ty (To y coordinate)
+	Piece    PieceType
+	Fx, Fy   *int
+	Tx, Ty   int // Tx (To x coordinate), Ty (To y coordinate)
+	IsCastle bool
 }
 
 type Colour string

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 
 	nyx "auraluvsu.com/nyx/logic"
 )
@@ -14,23 +15,27 @@ func ParseSAN(move string, colour nyx.Colour) (*nyx.Move, error) {
 	if move == "exit" {
 		os.Exit(1)
 	}
+	move = strings.TrimSpace(move)
+	if move == "O-O" || move == "0-0" {
+		return &nyx.Move{
+			Piece:    nyx.King,
+			Tx:       6,
+			Ty:       7,
+			IsCastle: true,
+		}, nil
+	}
+	if move == "O-O-O" || move == "0-0-0" {
+		return &nyx.Move{
+			Piece:    nyx.King,
+			Tx:       2,
+			Ty:       7,
+			IsCastle: true,
+		}, nil
+	}
 	re := regexp.MustCompile(`^([NBRQK]?)([a-h]?)([1-8]?)[x-]?([a-h][1-8])$`)
 	matches := re.FindStringSubmatch(move)
 	if matches == nil {
 		return nil, fmt.Errorf("Could not parse move: %s", move)
-	}
-	if move == "O-O" || move == "O-O-O" {
-		var test int
-		if colour == nyx.White {
-			test = 7
-		} else {
-			test = 0
-		}
-		fx, fy := 4, test
-		tx := 6
-		if move == "O-O-O" {
-			tx = 2
-		}
 	}
 	pieceChar := matches[1]
 	if pieceChar == "exit" {
