@@ -11,12 +11,18 @@ type Piece struct {
 }
 
 type Move struct {
-	Piece    PieceType
-	Fx, Fy   *int
-	Tx, Ty   int // Tx (To x coordinate), Ty (To y coordinate)
-	IsCastle bool
+	Piece      PieceType
+	Fx, Fy     *int
+	Tx, Ty     int // Tx (To x coordinate), Ty (To y coordinate)
+	IsCastle   bool
+	IsCapture  bool
+	PromoteTo  *PieceType
 }
 
+type Position struct {
+	X int
+	Y int
+}
 type Colour string
 type PieceType string
 
@@ -58,41 +64,41 @@ func pieceSymbol(p *Piece) string {
 	switch p.Type {
 	case Rook:
 		if p.Colour == White {
-			return " ♜  "
+			return " ♜ "
 		}
-		return " ♖  "
+		return " ♖ "
 
 	case Knight:
 		if p.Colour == White {
-			return " ♞  "
+			return " ♞ "
 		}
-		return " ♘  "
+		return " ♘ "
 
 	case Bishop:
 		if p.Colour == White {
-			return " ♝  "
+			return " ♝ "
 		}
-		return " ♗  "
+		return " ♗ "
 
 	case Queen:
 		if p.Colour == White {
-			return " ♛  "
+			return " ♛ "
 		}
-		return " ♕  "
+		return " ♕ "
 
 	case King:
 		if p.Colour == White {
-			return " ♚  "
+			return " ♚ "
 		}
-		return " ♔  "
+		return " ♔ "
 
 	case Pawn:
 		if p.Colour == White {
-			return " ♟︎  "
+			return " ♟ "
 		}
-		return " ♙  "
+		return " ♙ "
 
 	default:
-		return "."
+		return " . "
 	}
 }
