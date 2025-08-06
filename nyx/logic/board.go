@@ -35,14 +35,14 @@ func DebugPrintBoard(board [8][8]*Piece) {
 		for x := range 8 {
 			p := board[x][y]
 			if p == nil {
-				fmt.Print("  .  ")
+				fmt.Print(" . ")
 			} else {
 				sym := pieceSymbol(p)
-				fmt.Print(sym + " ")
+				fmt.Print(sym)
 			}
 		}
 		fmt.Println()
 		fmt.Println()
 	}
-	fmt.Println("    a    b    c    d    e    f    g    h    ")
+	fmt.Println("   a  b  c  d  e  f  g  h   ")
 }
