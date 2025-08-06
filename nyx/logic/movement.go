@@ -31,6 +31,7 @@ func sign(n int) int {
 	}
 	return 0
 }
+func enPassanting(fx int, m *Move) {}
 
 func CanCastle(kx, ky int, kingSide bool, side Colour, board [8][8]*Piece) bool {
 	var rookX int
@@ -43,9 +44,9 @@ func CanCastle(kx, ky int, kingSide bool, side Colour, board [8][8]*Piece) bool 
 	if rook == nil || rook.Type != Rook || rook.HasMoved || rook.Colour != side {
 		return false
 	}
-	start := min(kx, rookX)
+	start := min(kx, rookX) + 1
 	end := max(kx, rookX)
-	for x := start; x <= end; x++ {
+	for x := start; x < end; x++ {
 		if board[x][ky] != nil {
 			return false
 		}
@@ -69,7 +70,7 @@ func CanCastle(kx, ky int, kingSide bool, side Colour, board [8][8]*Piece) bool 
 	return true
 }
 
-func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
+func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPassantPos *Position) bool {
 	if !InBounds(toX, toY) {
 		return false
 	}
@@ -90,10 +91,18 @@ func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 			return true
 		}
 	} else if math.Abs(float64(dx)) == 1 && dy == direction {
+		if enPassantPos != nil && toX == enPassantPos.X && toY == enPassantPos.Y {
+			return true
+		}
 		return p.DiagPawnMove(fromX, fromY, toX, toY, board)
 	}
 	return false
 }
+
+func (p *Piece) Promote(m *Move) {
+	p.Type = *m.PromoteTo
+}
+
 func (p *Piece) IsValidKnightMove(fromX, fromY, toX, toY int, board [8][8]*Piece) bool {
 	if !InBounds(toX, toY) {
 		return false
@@ -200,19 +209,17 @@ func (p *Piece) IsValidKingMove(fromX, fromY, toX, toY int, board [8][8]*Piece) 
 	if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
 		return true, nil
 	}
-	if dy != 0 || p.HasMoved || p.Type != King {
-		return false, nil
-	}
-	if dx == 2 {
-		return CanCastle(fromX, fromY, true, p.Colour, board), nil
-	}
-	if dx == 3 {
-		return CanCastle(fromX, fromY, false, p.Colour, board), nil
+	// Castle logic
+	if dy == 0 && !p.HasMoved && p.Type == King {
+		if dx == 2 { // King-side or Queen-side castle
+			kingSide := toX > fromX
+			return CanCastle(fromX, fromY, kingSide, p.Colour, board), nil
+		}
 	}
 	return false, nil
 }
 
-func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (bool, error) {
+func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPassantPos *Position) (bool, error) {
 	switch p.Type {
 	case Rook:
 		return p.IsValidRookMove(fromX, fromY, toX, toY, board), nil
@@ -230,7 +237,7 @@ func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece) (boo
 		val, err := p.IsValidKingMove(fromX, fromY, toX, toY, board)
 		return val, err
 	case Pawn:
-		return p.IsValidPawnMove(fromX, fromY, toX, toY, board), nil
+		return p.IsValidPawnMove(fromX, fromY, toX, toY, board, enPassantPos), nil
 
 	default:
 		return false, fmt.Errorf("Error! Not a valid piece")
