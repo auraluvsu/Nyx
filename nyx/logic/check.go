@@ -22,7 +22,7 @@ func IsInCheck(c Colour, board [8][8]*Piece) bool {
 		for y := range 8 {
 			p := board[x][y]
 			if p != nil && p.Colour != c {
-				check, err := p.IsValidMove(x, y, kingX, kingY, board)
+				check, err := p.IsValidMove(x, y, kingX, kingY, board, nil)
 				if err != nil {
 					log.Fatal("Error processing check")
 				}
@@ -42,7 +42,7 @@ func HasAnyLegalMoves(c Colour, board [8][8]*Piece) bool {
 			if p != nil && p.Colour == c {
 				for toX := range 8 {
 					for toY := range 8 {
-						val, err := p.IsValidMove(fromX, fromY, toX, toY, board)
+						val, err := p.IsValidMove(fromX, fromY, toX, toY, board, nil)
 						if err != nil {
 							log.Fatal("Error getting valid moves")
 						}
