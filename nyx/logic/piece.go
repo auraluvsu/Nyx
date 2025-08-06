@@ -17,6 +17,7 @@ type Move struct {
 	IsCastle   bool
 	IsCapture  bool
 	PromoteTo  *PieceType
+
 }
 
 type Position struct {

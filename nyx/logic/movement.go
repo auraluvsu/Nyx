@@ -71,6 +71,10 @@ func CanCastle(kx, ky int, kingSide bool, side Colour, board [8][8]*Piece) bool 
 }
 
 func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPassantPos *Position) bool {
+func makeMove(fx, fy, tx, ty int, board [8][8]*Piece) {
+	pc := board[fx][fy]
+	pc.HasMoved = true
+	board[tx][ty], board[fx][fy] = pc, nil
 	if !InBounds(toX, toY) {
 		return false
 	}
@@ -236,6 +240,7 @@ func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPa
 	case King:
 		val, err := p.IsValidKingMove(fromX, fromY, toX, toY, board)
 		return val, err
+    
 	case Pawn:
 		return p.IsValidPawnMove(fromX, fromY, toX, toY, board, enPassantPos), nil
 
