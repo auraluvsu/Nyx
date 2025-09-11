@@ -31,18 +31,21 @@ func SetupBoard() [8][8]*Piece {
 
 func DebugPrintBoard(board [8][8]*Piece) {
 	for y := range 8 {
-		fmt.Printf("%d ", y+1)
+		fmt.Printf("%d ", 8-y)
 		for x := range 8 {
 			p := board[x][y]
 			if p == nil {
-				fmt.Print(" . ")
+
+				//p.Type = Default
+				fmt.Print(pieceSymbol(p))
 			} else {
 				sym := pieceSymbol(p)
+
 				fmt.Print(sym)
 			}
 		}
 		fmt.Println()
 		fmt.Println()
 	}
-	fmt.Println("   a  b  c  d  e  f  g  h   ")
+	fmt.Println("   a    b    c    d    e    f    g    h   ")
 }

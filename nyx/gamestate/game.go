@@ -3,6 +3,7 @@ package gamestate
 import (
 	"fmt"
 	"math"
+	"time"
 
 	nyx "auraluvsu.com/nyx/logic"
 	"auraluvsu.com/nyx/parsing"
@@ -10,8 +11,15 @@ import (
 
 var enPassantPos *nyx.Position
 
+type Cache struct {
+	created_at time.Time
+	gameID     string
+	moveList   []string
+}
+
 func Game() {
 	fmt.Println("Welcome to Gochess!")
+	var cache []string
 	board := nyx.SetupBoard()
 	turn := nyx.White
 	for {
@@ -30,6 +38,7 @@ func Game() {
 		fmt.Printf("%s to move: \n", turn)
 		var moveStr string
 		fmt.Scan(&moveStr)
+		cache = append(cache, moveStr)
 		move, err := parsing.ParseSAN(moveStr, turn)
 		if err != nil {
 			fmt.Println(err)
@@ -131,4 +140,9 @@ func Game() {
 		}
 		turn = nyx.OppositeColour(turn)
 	}
+}
+
+func cacheGame(list []string, moves string) []string {
+	list = append(list, moves)
+	return list
 }

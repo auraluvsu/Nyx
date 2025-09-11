@@ -11,13 +11,12 @@ type Piece struct {
 }
 
 type Move struct {
-	Piece      PieceType
-	Fx, Fy     *int
-	Tx, Ty     int // Tx (To x coordinate), Ty (To y coordinate)
-	IsCastle   bool
-	IsCapture  bool
-	PromoteTo  *PieceType
-
+	Piece     PieceType
+	Fx, Fy    *int
+	Tx, Ty    int // Tx (To x coordinate), Ty (To y coordinate)
+	IsCastle  bool
+	IsCapture bool
+	PromoteTo *PieceType
 }
 
 type Position struct {
@@ -33,12 +32,13 @@ const (
 )
 
 const ( // Piece Types
-	Pawn   PieceType = "Pawn"
-	Knight PieceType = "Knight"
-	Bishop PieceType = "Bishop"
-	Rook   PieceType = "Rook"
-	King   PieceType = "King"
-	Queen  PieceType = "Queen"
+	Default PieceType = "Default"
+	Pawn    PieceType = "Pawn"
+	Knight  PieceType = "Knight"
+	Bishop  PieceType = "Bishop"
+	Rook    PieceType = "Rook"
+	King    PieceType = "King"
+	Queen   PieceType = "Queen"
 )
 
 func makeBoard() [][]uint8 {
@@ -62,44 +62,49 @@ func chessToIndex(pos string) (x, y int, err error) {
 }
 
 func pieceSymbol(p *Piece) string {
-	switch p.Type {
+	var pieceType PieceType = ""
+
+	if p != nil {
+		pieceType = p.Type
+	}
+
+	switch pieceType {
 	case Rook:
 		if p.Colour == White {
-			return " ♜ "
+			return " ♜   "
 		}
-		return " ♖ "
+		return " ♖   "
 
 	case Knight:
 		if p.Colour == White {
-			return " ♞ "
+			return " ♞   "
 		}
-		return " ♘ "
+		return " ♘   "
 
 	case Bishop:
 		if p.Colour == White {
-			return " ♝ "
+			return " ♝   "
 		}
-		return " ♗ "
+		return " ♗   "
 
 	case Queen:
 		if p.Colour == White {
-			return " ♛ "
+			return " ♛   "
 		}
-		return " ♕ "
+		return " ♕   "
 
 	case King:
 		if p.Colour == White {
-			return " ♚ "
+			return " ♚   "
 		}
-		return " ♔ "
+		return " ♔   "
 
 	case Pawn:
 		if p.Colour == White {
-			return " ♟ "
+			return " ♟   "
 		}
-		return " ♙ "
-
-	default:
-		return " . "
+		return " ♙   "
 	}
+
+	return " 🨅   "
 }
