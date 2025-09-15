@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"syscall"
 
 	nyx "auraluvsu.com/nyx/logic"
 )
@@ -12,6 +13,15 @@ func ParseSAN(move string, colour nyx.Colour) (*nyx.Move, error) {
 	m := &nyx.Move{}
 	if move == "exit" {
 		os.Exit(1)
+	}
+	if move == "restart" {
+		binary, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		args := []string{binary}
+		env := os.Environ()
+		syscall.Exec(binary, args, env)
 	}
 	if move == "O-O" || move == "0-0" {
 		m.IsCastle = true
@@ -109,4 +119,3 @@ func ParseSAN(move string, colour nyx.Colour) (*nyx.Move, error) {
 
 	return m, nil
 }
-

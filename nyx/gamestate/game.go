@@ -17,7 +17,7 @@ type Cache struct {
 	moveList   []string
 }
 
-func Game() {
+func Game() []string {
 	fmt.Println("Welcome to Gochess!")
 	var cache []string
 	board := nyx.SetupBoard()
@@ -29,16 +29,16 @@ func Game() {
 			fmt.Printf("%s is in check\n", turn)
 			if !nyx.HasAnyLegalMoves(turn, board) {
 				fmt.Printf("Checkmate! %s wins", nyx.OppositeColour(turn))
-				break
+				return cache
 			}
 		} else if !nyx.HasAnyLegalMoves(turn, board) {
 			fmt.Println("Stalemate! It's a draw.")
-			break
+			return cache
 		}
 		fmt.Printf("%s to move: \n", turn)
 		var moveStr string
 		fmt.Scan(&moveStr)
-		cache = append(cache, moveStr)
+		cacheGame(cache, moveStr)
 		move, err := parsing.ParseSAN(moveStr, turn)
 		if err != nil {
 			fmt.Println(err)
