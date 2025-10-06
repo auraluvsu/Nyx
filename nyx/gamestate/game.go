@@ -1,7 +1,11 @@
 package gamestate
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"log"
 	"math"
 	"time"
 
@@ -12,14 +16,29 @@ import (
 var enPassantPos *nyx.Position
 
 type Cache struct {
-	created_at time.Time
-	gameID     string
-	moveList   []string
+	Created_at time.Time
+	GameID     string
+	MoveList   []string
 }
 
-func Game() {
+func HashString(length int) (string, error) {
+	bytes := make([]byte, length/2)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+	hash := sha256.Sum256(bytes)
+	return hex.EncodeToString(hash[:]), nil
+}
+
+func Game() (Cache, error) {
 	fmt.Println("Welcome to Gochess!")
 	var cache []string
+	var finalCache []string
+	hashId, err := HashString(32)
+	if err != nil {
+		return Cache{}, err
+	}
 	board := nyx.SetupBoard()
 	turn := nyx.White
 	for {
@@ -140,9 +159,19 @@ func Game() {
 		}
 		turn = nyx.OppositeColour(turn)
 	}
+	return Cache{
+		created_at: time.Now(),
+		gameID:     hashId,
+		moveList:   finalCache,
+	}, nil
 }
 
-func cacheGame(list []string, moves string) []string {
-	list = append(list, moves)
-	return list
+var GameCache *Cache
+
+func init() {
+	cache, err := Game()
+	if err != nil {
+		log.Fatal(err)
+	}
+	GameCache = &cache
 }
