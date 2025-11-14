@@ -46,11 +46,11 @@ func Game() (Cache, error) {
 		nyx.DebugPrintBoard(board)
 		if nyx.IsInCheck(turn, board) {
 			fmt.Printf("%s is in check\n", turn)
-			if !nyx.HasAnyLegalMoves(turn, board) {
+			if !nyx.HasAnyLegalMoves(turn, board, enPassantPos) {
 				fmt.Printf("Checkmate! %s wins", nyx.OppositeColour(turn))
 				break
 			}
-		} else if !nyx.HasAnyLegalMoves(turn, board) {
+		} else if !nyx.HasAnyLegalMoves(turn, board, enPassantPos) {
 			fmt.Println("Stalemate! It's a draw.")
 			break
 		}
@@ -160,9 +160,9 @@ func Game() (Cache, error) {
 		turn = nyx.OppositeColour(turn)
 	}
 	return Cache{
-		created_at: time.Now(),
-		gameID:     hashId,
-		moveList:   finalCache,
+		Created_at: time.Now(),
+		GameID:     hashId,
+		MoveList:   finalCache,
 	}, nil
 }
 

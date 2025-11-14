@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	// "log"
 
 	"auraluvsu.com/nyx/engine"
 	nyx "auraluvsu.com/nyx/logic"
@@ -9,6 +9,5 @@ import (
 
 func main() {
 	board := nyx.SetupBoard()
-	log.Println(engine.Perft(board, 5, nyx.White))
-	engine.PerftDivide(board, 5, nyx.White)
+	engine.PerftDivide(board, 6, nyx.White, nil)
 }
