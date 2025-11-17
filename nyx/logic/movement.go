@@ -75,6 +75,7 @@ func makeMove(fx, fy, tx, ty int, board [8][8]*Piece) {
 	pc.HasMoved = true
 	board[tx][ty], board[fx][fy] = pc, nil
 }
+
 func (p *Piece) IsValidPawnMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPassantPos *Position) bool {
 	if !InBounds(toX, toY) {
 		return false
@@ -241,7 +242,7 @@ func (p *Piece) IsValidMove(fromX, fromY, toX, toY int, board [8][8]*Piece, enPa
 	case King:
 		val, err := p.IsValidKingMove(fromX, fromY, toX, toY, board)
 		return val, err
-    
+
 	case Pawn:
 		return p.IsValidPawnMove(fromX, fromY, toX, toY, board, enPassantPos), nil
 

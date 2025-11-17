@@ -65,7 +65,7 @@ func Evaluate(board [8][8]*nyx.Piece, side nyx.Colour) int {
 	return score
 }
 
-func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, yield func(fx, fy, tx, ty int, p *nyx.Piece, cap *nyx.Piece)) {
+func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, enPassant *nyx.Position, yield func(fx, fy, tx, ty int, p *nyx.Piece, cap *nyx.Piece, nextEnPassant *nyx.Position)) {
 	for fromX := range 8 {
 		for fromY := range 8 {
 			p := board[fromX][fromY]
@@ -74,7 +74,7 @@ func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, yield func(fx, fy, tx, ty in
 			}
 			for toX := range 8 {
 				for toY := range 8 {
-					val, err := p.IsValidMove(fromX, fromY, toX, toY, board, nil)
+					val, err := p.IsValidMove(fromX, fromY, toX, toY, board, enPassant)
 					if err != nil || !val {
 						continue
 					}
@@ -85,36 +85,56 @@ func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, yield func(fx, fy, tx, ty in
 							nyx.Rook,
 							nyx.Knight,
 						}
+						captured := board[toX][toY]
+						board[toX][toY], board[fromX][fromY] = p, nil
+						originalType := p.Type
 						for _, promo := range promotions {
-							temp := board[toX][toY]
-							board[toX][toY] = p
-							board[fromX][fromY] = nil
 							p.Type = promo
 							if !nyx.IsInCheck(c, board) {
-								yield(fromX, fromY, toX, toY, p, temp)
-							yield(fromX, fromY, toX, toY, p, temp)
+								yield(fromX, fromY, toX, toY, p, captured, nil)
 							}
-							p.Type = nyx.Pawn
-							board[fromX][fromY] = p
-							board[toX][toY] = temp
 						}
+						p.Type = originalType
+						board[fromX][fromY], board[toX][toY] = p, captured
 						continue
 					}
 					temp := board[toX][toY]
 					board[toX][toY], board[fromX][fromY] = p, nil
+					isEnPassant := p.Type == nyx.Pawn && enPassant != nil &&
+						toX == enPassant.X && toY == enPassant.Y && temp == nil &&
+						int(math.Abs(float64(toX-fromX))) == 1
+					var capturedPawn *nyx.Piece
+					var captureY int
+					if isEnPassant {
+						step := 1
+						if p.Colour == nyx.White {
+							step = -1
+						}
+						captureY = toY - step
+						capturedPawn = board[toX][captureY]
+						board[toX][captureY] = nil
+					}
 					if !nyx.IsInCheck(c, board) {
-						yield(fromX, fromY, toX, toY, p, temp)
+						var nextEnPassant *nyx.Position
+						if p.Type == nyx.Pawn && int(math.Abs(float64(toY-fromY))) == 2 {
+							nextEnPassant = &nyx.Position{X: fromX, Y: (fromY + toY) / 2}
+						}
+						yield(fromX, fromY, toX, toY, p, temp, nextEnPassant)
 					}
 					board[fromX][fromY], board[toX][toY] = p, temp
+					if isEnPassant {
+						board[toX][captureY] = capturedPawn
+					}
 				}
 			}
 		}
 	}
 }
 
-func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn nyx.Colour) int {
-	if depth == 0 || !nyx.HasAnyLegalMoves(turn, board) {
-		if !nyx.HasAnyLegalMoves(turn, board) {
+func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn nyx.Colour, enPassant *nyx.Position) int {
+	noMoves := !nyx.HasAnyLegalMoves(turn, board, enPassant)
+	if depth == 0 || noMoves {
+		if noMoves {
 			if nyx.IsInCheck(turn, board) {
 				if turn == maxColour {
 					return -99999 + depth
@@ -128,9 +148,9 @@ func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn
 
 	if maxColour == turn {
 		best := math.MinInt32
-		genMoves(turn, board, func(fx, fy, tx, ty int, p, cap *nyx.Piece) {
+		genMoves(turn, board, enPassant, func(fx, fy, tx, ty int, p, cap *nyx.Piece, nextEnPassant *nyx.Position) {
 			board[tx][ty], board[fx][fy] = p, nil
-			score := Minimax(board, depth-1, alpha, beta, maxColour, nyx.OppositeColour(turn))
+			score := Minimax(board, depth-1, alpha, beta, maxColour, nyx.OppositeColour(turn), nextEnPassant)
 			board[fx][fy], board[tx][ty] = p, cap
 			if score > best {
 				best = score
@@ -145,9 +165,9 @@ func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn
 		return best
 	}
 	best := math.MaxInt32
-	genMoves(turn, board, func(fx, fy, tx, ty int, p, cap *nyx.Piece) {
+	genMoves(turn, board, enPassant, func(fx, fy, tx, ty int, p, cap *nyx.Piece, nextEnPassant *nyx.Position) {
 		board[tx][ty], board[fx][fy] = p, nil
-		score := Minimax(board, depth-1, alpha, beta, maxColour, nyx.OppositeColour(turn))
+		score := Minimax(board, depth-1, alpha, beta, maxColour, nyx.OppositeColour(turn), nextEnPassant)
 		board[fx][fy], board[tx][ty] = p, cap
 
 		if score < best {
@@ -159,7 +179,6 @@ func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn
 		if beta <= alpha {
 			return
 		}
-
 	})
 	return best
 }

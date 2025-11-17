@@ -1,7 +1,11 @@
 package gamestate
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"log"
 	"math"
 	"time"
 
@@ -12,14 +16,34 @@ import (
 var enPassantPos *nyx.Position
 
 type Cache struct {
-	created_at time.Time
-	gameID     string
-	moveList   []string
+	Created_at time.Time
+	GameID     string
+	MoveList   []string
 }
 
-func Game() {
+// HashString generates a random string of the specified length.
+// The `length` parameter specifies the length of the resulting hex-encoded string.
+// Internally, `length/2` random bytes are generated, hashed with SHA-256, and then hex-encoded.
+// Note: The output string will be exactly `length` characters long if `length` is less than or equal to 64,
+// since SHA-256 produces 32 bytes (64 hex characters). For larger values, the output will be 64 characters.
+func HashString(length int) (string, error) {
+	bytes := make([]byte, length/2)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+	hash := sha256.Sum256(bytes)
+	return hex.EncodeToString(hash[:]), nil
+}
+
+func Game() (Cache, error) {
 	fmt.Println("Welcome to Gochess!")
 	var cache []string
+	var finalCache []string
+	hashId, err := HashString(32)
+	if err != nil {
+		return Cache{}, err
+	}
 	board := nyx.SetupBoard()
 	turn := nyx.White
 	for {
@@ -27,11 +51,11 @@ func Game() {
 		nyx.DebugPrintBoard(board)
 		if nyx.IsInCheck(turn, board) {
 			fmt.Printf("%s is in check\n", turn)
-			if !nyx.HasAnyLegalMoves(turn, board) {
+			if !nyx.HasAnyLegalMoves(turn, board, enPassantPos) {
 				fmt.Printf("Checkmate! %s wins", nyx.OppositeColour(turn))
 				break
 			}
-		} else if !nyx.HasAnyLegalMoves(turn, board) {
+		} else if !nyx.HasAnyLegalMoves(turn, board, enPassantPos) {
 			fmt.Println("Stalemate! It's a draw.")
 			break
 		}
@@ -140,9 +164,19 @@ func Game() {
 		}
 		turn = nyx.OppositeColour(turn)
 	}
+	return Cache{
+		Created_at: time.Now(),
+		GameID:     hashId,
+		MoveList:   finalCache,
+	}, nil
 }
 
-func cacheGame(list []string, moves string) []string {
-	list = append(list, moves)
-	return list
+var GameCache *Cache
+
+func init() {
+	cache, err := Game()
+	if err != nil {
+		log.Fatal(err)
+	}
+	GameCache = &cache
 }

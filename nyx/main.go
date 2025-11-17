@@ -1,7 +1,13 @@
 package main
 
-import "auraluvsu.com/nyx/gamestate"
+import (
+	// "log"
+
+	"auraluvsu.com/nyx/engine"
+	nyx "auraluvsu.com/nyx/logic"
+)
 
 func main() {
-	gamestate.Game()
+	board := nyx.SetupBoard()
+	engine.PerftDivide(board, 6, nyx.White, nil)
 }
