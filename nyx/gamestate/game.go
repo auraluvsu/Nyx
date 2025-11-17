@@ -21,6 +21,11 @@ type Cache struct {
 	MoveList   []string
 }
 
+// HashString generates a random string of the specified length.
+// The `length` parameter specifies the length of the resulting hex-encoded string.
+// Internally, `length/2` random bytes are generated, hashed with SHA-256, and then hex-encoded.
+// Note: The output string will be exactly `length` characters long if `length` is less than or equal to 64,
+// since SHA-256 produces 32 bytes (64 hex characters). For larger values, the output will be 64 characters.
 func HashString(length int) (string, error) {
 	bytes := make([]byte, length/2)
 	_, err := rand.Read(bytes)
