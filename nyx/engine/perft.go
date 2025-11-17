@@ -57,7 +57,7 @@ func applyPerftMove(board [8][8]*nyx.Piece, fx, fy, tx, ty int, mover *nyx.Piece
 	return newBoard
 }
 
-// Perft takes the algorithm - in this case, the minimax algorithm - and runs int
+// Perft takes the algorithm - in this case, the minimax algorithm - and runs it
 // on a set depth to make sure the engine algorithm is working properly
 func Perft(board [8][8]*nyx.Piece, depth int, turn nyx.Colour, enPassant *nyx.Position) int {
 	if depth == 0 {
