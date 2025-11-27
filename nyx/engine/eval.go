@@ -92,7 +92,7 @@ func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, yield func(fx, fy, tx, ty in
 							p.Type = promo
 							if !nyx.IsInCheck(c, board) {
 								yield(fromX, fromY, toX, toY, p, temp)
-							yield(fromX, fromY, toX, toY, p, temp)
+								yield(fromX, fromY, toX, toY, p, temp)
 							}
 							p.Type = nyx.Pawn
 							board[fromX][fromY] = p
@@ -110,6 +110,35 @@ func genMoves(c nyx.Colour, board [8][8]*nyx.Piece, yield func(fx, fy, tx, ty in
 			}
 		}
 	}
+}
+
+func Negamax(board *[8][8]board, depth int, color int) int {
+	if depth == 0 {
+		return color * Evaluate(board)
+	}
+
+	best := math.MinInt
+	moves := GenerateMoves(board, color)
+
+	if len(moves) == 0 {
+		// Checkmate or stalemate
+		if InCheck(board, color) {
+			return -999999 * depth // mate score
+		}
+		return 0 // stalemate
+	}
+
+	for _, move := range moves {
+		board.MakeMove(move)
+		score := -Negamax(board, depth-1, -color)
+		board.UndoMove(move)
+
+		if score > best {
+			best = score
+		}
+	}
+
+	return best
 }
 
 func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn nyx.Colour) int {
@@ -159,7 +188,6 @@ func Minimax(board [8][8]*nyx.Piece, depth int, alpha, beta int, maxColour, turn
 		if beta <= alpha {
 			return
 		}
-
 	})
 	return best
 }
