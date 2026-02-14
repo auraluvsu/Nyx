@@ -1,3 +1,4 @@
+// Package gamestate: this is the packagge that controls the actual cli chess game
 package gamestate
 
 import (
@@ -12,9 +13,9 @@ import (
 var enPassantPos *nyx.Position
 
 type Cache struct {
-	created_at time.Time
-	gameID     string
-	moveList   []string
+	createdAt time.Time
+	gameID    string
+	moveList  []string
 }
 
 func Game() {
@@ -38,7 +39,7 @@ func Game() {
 		fmt.Printf("%s to move: \n", turn)
 		var moveStr string
 		fmt.Scan(&moveStr)
-		cache = append(cache, moveStr)
+		_ = append(cache, moveStr)
 		move, err := parsing.ParseSAN(moveStr, turn)
 		if err != nil {
 			fmt.Println(err)
@@ -90,40 +91,41 @@ func Game() {
 						fmt.Println(err)
 						continue
 					}
-					if val {
-						// Validate capture move
-						targetPiece := board[move.Tx][move.Ty]
-						isEnPassant := piece.Type == nyx.Pawn && enPassantPos != nil && move.Tx == enPassantPos.X && move.Ty == enPassantPos.Y
-						if move.IsCapture && targetPiece == nil && !isEnPassant {
-							fmt.Println("Invalid move: capture notation used but no piece to capture.")
-							continue
-						} else if !move.IsCapture && targetPiece != nil {
-							fmt.Println("Invalid move: must use capture notation 'x'.")
-							continue
-						}
-
-						// Handle en passant capture
-						if piece.Type == nyx.Pawn && enPassantPos != nil && move.Tx == enPassantPos.X && move.Ty == enPassantPos.Y {
-							var capturedPawnY int
-							if piece.Colour == nyx.White {
-								capturedPawnY = move.Ty + 1
-							} else {
-								capturedPawnY = move.Ty - 1
-							}
-							board[move.Tx][capturedPawnY] = nil
-						}
-
-						// Set enPassantPos for the next turn
-						if piece.Type == nyx.Pawn && math.Abs(float64(fromY-move.Ty)) == 2 {
-							enPassantPos = &nyx.Position{X: fromX, Y: (fromY + move.Ty) / 2}
-						} else {
-							enPassantPos = nil
-						}
-
-						board[move.Tx][move.Ty] = piece
-						board[fromX][fromY] = nil
-						found = true
+					if !val {
+						return
 					}
+					// Validate capture move
+					targetPiece := board[move.Tx][move.Ty]
+					isEnPassant := piece.Type == nyx.Pawn && enPassantPos != nil && move.Tx == enPassantPos.X && move.Ty == enPassantPos.Y
+					if move.IsCapture && targetPiece == nil && !isEnPassant {
+						fmt.Println("Invalid move: capture notation used but no piece to capture.")
+						continue
+					} else if !move.IsCapture && targetPiece != nil {
+						fmt.Println("Invalid move: must use capture notation 'x'.")
+						continue
+					}
+
+					// Handle en passant capture
+					if piece.Type == nyx.Pawn && enPassantPos != nil && move.Tx == enPassantPos.X && move.Ty == enPassantPos.Y {
+						var capturedPawnY int
+						if piece.Colour == nyx.White {
+							capturedPawnY = move.Ty + 1
+						} else {
+							capturedPawnY = move.Ty - 1
+						}
+						board[move.Tx][capturedPawnY] = nil
+					}
+
+					// Set enPassantPos for the next turn
+					if piece.Type == nyx.Pawn && math.Abs(float64(fromY-move.Ty)) == 2 {
+						enPassantPos = &nyx.Position{X: fromX, Y: (fromY + move.Ty) / 2}
+					} else {
+						enPassantPos = nil
+					}
+
+					board[move.Tx][move.Ty] = piece
+					board[fromX][fromY] = nil
+					found = true
 					if nyx.IsInCheck(turn, board) {
 						fmt.Println("Error: You are in check.")
 						board[move.Tx][move.Ty] = nil
@@ -131,7 +133,6 @@ func Game() {
 						found = false
 					}
 				}
-
 			}
 		}
 		if !found {
@@ -142,7 +143,7 @@ func Game() {
 	}
 }
 
-func cacheGame(list []string, moves string) []string {
-	list = append(list, moves)
-	return list
-}
+// func cacheGame(list []string, moves string) []string {
+// 	list = append(list, moves)
+// 	return list
+// }
